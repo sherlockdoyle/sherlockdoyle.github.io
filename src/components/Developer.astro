@@ -1,12 +1,20 @@
 ---
 interface Props {
+  nojs?: boolean;
   className?: string;
 }
-const { className } = Astro.props;
+const { nojs, className } = Astro.props;
 ---
 
 <p class={className}>
-  <span id='me'>Shekhar Dutta</span> - Full Stack Developer &bull; <button id='resume'>Resume &DownArrowBar;</button>
+  <span id='me'>Shekhar Dutta</span> - Full Stack Developer{
+    nojs ? undefined : (
+      <>
+        {' '}
+        &bull; <button id='resume'>Resume &DownArrowBar;</button>
+      </>
+    )
+  }
 </p>
 
 <script>

@@ -1,5 +1,10 @@
 ---
-import { KEY, moreThemes, themes } from '../components/themes/themes';
+import ThemeLoader from '../components/themes/ThemeLoader.astro';
+
+interface Props {
+  nojs?: boolean;
+}
+const { nojs } = Astro.props;
 ---
 
 <!doctype html>
@@ -27,85 +32,24 @@ import { KEY, moreThemes, themes } from '../components/themes/themes';
     <style is:inline>
       @layer reset, base, theme;
     </style>
-    <script
-      is:inline
-      define:vars={{ KEY, themes: themes.flat(), moreThemes: moreThemes.filter(t => t !== 'undefined') }}
-    >
-      /** @import { Theme } from '../components/themes/themes' */
-
-      /** @type {Theme | null} */
-      let theme = null;
-      function getSystemTheme() {
-        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark null' : 'null';
-      }
-
-      /** @type {Theme[]} */
-      let seen = [];
-      const data = localStorage.getItem(KEY);
-      if (data)
-        try {
-          const parsed = JSON.parse(data);
-          if (Array.isArray(parsed) && parsed.every(t => typeof t === 'string')) {
-            seen = parsed;
-            if (seen.length < 2) theme = getSystemTheme();
-          } else theme = getSystemTheme();
-        } catch {
-          theme = getSystemTheme();
-        }
-      else theme = 'undefined';
-
-      const queryTheme = new URLSearchParams(window.location.search).get('t');
-      if (queryTheme === 'undefined' || themes.includes(queryTheme) || moreThemes.includes(queryTheme))
-        theme = queryTheme;
-
-      if (!theme) {
-        const availableThemes = themes.filter(t => !seen.includes(t)),
-          a = availableThemes.length;
-        if (a) {
-          const availableMore = moreThemes.filter(t => !seen.includes(t)),
-            b = availableMore.length;
-          const available = Math.random() > (a + b) / (a + 2 * b) ? availableMore : availableThemes;
-          theme = available[Math.floor(Math.random() * available.length)];
-        } else theme = getSystemTheme();
-      }
-
-      seen.unshift(theme);
-      seen.length = Math.min(seen.length, Math.floor((themes.length + moreThemes.length) * 0.75));
-      localStorage.setItem(KEY, JSON.stringify(seen));
-
-      /** @type {Partial<Record<Theme, string>>} */
-      const themeCss = {
-          null: 'null',
-          'dark null': 'null-dark',
-          Résumé: 'resume',
-          Neon: 'neon',
-          Matrix: 'matrix',
-          lighter: 'lighter',
-          darker: 'darker',
-          'Barrel Roll': 'barrel-roll',
-        },
-        /** @type {Theme[]} */
-        baseless = ['undefined', 'Résumé'];
-
-      if (!baseless.includes(theme)) {
-        const link = document.createElement('link');
-        link.rel = 'stylesheet';
-        link.href = '/themes/base.css';
-        document.head.appendChild(link);
-      }
-
-      const css = themeCss[theme];
-      if (css) {
-        const style = document.createElement('style');
-        style.textContent = `@import url('/themes/${css}.css') layer(theme);`;
-        style.onload = style.onerror = () => (document.body.style.opacity = '');
-        document.head.appendChild(style);
-      } else document.addEventListener('DOMContentLoaded', () => (document.body.style.opacity = ''));
-
-      window.__theme = theme;
-    </script>
+    {
+      nojs ? (
+        <>
+          <link rel='stylesheet' href='/themes/nojs.css' />
+          <script is:inline>window.location.replace('/');</script>
+        </>
+      ) : (
+        <>
+          <ThemeLoader />
+          <noscript>
+            <meta http-equiv='refresh' content='0; url=/nojs' />
+          </noscript>
+        </>
+      )
+    }
   </head>
-  <body style={{ opacity: 0 }}>
+
+  <body style={nojs ? undefined : { opacity: 0 }}>
     <slot />
   </body>
 </html>

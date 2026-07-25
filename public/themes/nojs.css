@@ -1,0 +1,15 @@
+@import url('base.css');
+
+@import url('null.css') (prefers-color-scheme: light);
+@import url('null-dark.css') (prefers-color-scheme: dark);
+
+#header > nav > ul > .request {
+  font-style: italic;
+  font-size: 0.8rem;
+  line-height: 1;
+  font-weight: 600;
+}
+
+project-card > article {
+  cursor: default;
+}

@@ -7,9 +7,9 @@ import Quotes from './Quotes.astro';
 import ThemeButton from './themes/ThemeButton.astro';
 
 interface Props {
-  jsEnabled?: boolean;
+  nojs?: boolean;
 }
-const { jsEnabled = true } = Astro.props;
+const { nojs } = Astro.props;
 
 const yoe = Temporal.Now.plainDateISO().since(Temporal.PlainDate.from('2021-08-02'), { largestUnit: 'years' }).years,
   numProjects = projects.length;
@@ -33,7 +33,13 @@ const yoe = Temporal.Now.plainDateISO().since(Temporal.PlainDate.from('2021-08-0
         <a href='#connect'>Connect</a>
       </li>
       {
-        jsEnabled && (
+        nojs ? (
+          <li class='request'>
+            Some features need JavaScript.
+            <br />
+            The interesting ones.
+          </li>
+        ) : (
           <li>
             <ThemeButton />
           </li>
@@ -44,7 +50,7 @@ const yoe = Temporal.Now.plainDateISO().since(Temporal.PlainDate.from('2021-08-0
 </header>
 
 <main>
-  <About />
+  <About nojs={nojs} />
 
   <section id='stats'>
     <dl>
@@ -175,7 +181,7 @@ const yoe = Temporal.Now.plainDateISO().since(Temporal.PlainDate.from('2021-08-0
       <p>An idea shows up. I get curious. I get coding. I get carried away.</p>
     </header>
 
-    <ProjectsGrid />
+    <ProjectsGrid nojs={nojs} />
   </section>
 
   <!-- <section id='articles'>

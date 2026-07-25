@@ -1,10 +1,15 @@
 ---
 import ProjectCard from './ProjectCard.astro';
 import projects from './projects';
+
+interface Props {
+  nojs?: boolean;
+}
+const { nojs } = Astro.props;
 ---
 
 <div id='project-grid'>
-  {projects.map(project => <ProjectCard {...project} />)}
+  {projects.map(project => <ProjectCard nojs={nojs} {...project} />)}
 </div>
 
 <script>

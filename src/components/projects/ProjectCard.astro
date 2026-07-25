@@ -2,8 +2,8 @@
 import type { Project } from './projects';
 import Spanner from './Spanner.astro';
 
-type Props = Project;
-const { id, name, summaryChunks, descriptionChunks, ghUrl, url, date, featured, tags } = Astro.props;
+type Props = { nojs?: boolean } & Project;
+const { nojs, id, name, summaryChunks, descriptionChunks, ghUrl, url, date, featured, tags } = Astro.props;
 ---
 
 <project-card tabindex='0' role='button' aria-expanded='false' aria-controls={`project-${id}-content`}>
@@ -18,11 +18,11 @@ const { id, name, summaryChunks, descriptionChunks, ghUrl, url, date, featured, 
     </header>
 
     <p id={`project-${id}-content`} style={{ marginBottom: 'var(--mb)' }}>
-      <Spanner id={id} chunks={summaryChunks} />
+      {nojs ? summaryChunks.map(({ text }) => text) : <Spanner id={id} chunks={summaryChunks} />}
     </p>
 
     <footer style={{ viewTransitionName: `project-${id}-footer` }}>
-      <div class='links' style={{ display: 'none' }}>
+      <div class='links' style={{ display: nojs ? 'flex' : 'none' }}>
         <a href={ghUrl} target='_blank' rel='noopener noreferrer'>See on GitHub</a>
         {
           url && (
@@ -32,7 +32,7 @@ const { id, name, summaryChunks, descriptionChunks, ghUrl, url, date, featured, 
           )
         }
       </div>
-      <div class='tags' style={{ height: 'var(--th)', viewTransitionName: `project-${id}-tags` }}>
+      <div class='tags' style={nojs ? undefined : { height: 'var(--th)', viewTransitionName: `project-${id}-tags` }}>
         {tags.map(tag => <span class='tag'>{tag}</span>)}
       </div>
     </footer>

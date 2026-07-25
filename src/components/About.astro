@@ -1,11 +1,16 @@
 ---
 import Developer from './Developer.astro';
+
+interface Props {
+  nojs?: boolean;
+}
+const { nojs } = Astro.props;
 ---
 
 <section id='about'>
   <header>
     <div class='content'>
-      <Developer className='eyebrow' />
+      <Developer nojs={nojs} className='eyebrow' />
       <h2>If I think it, I build it. The list is infinite.</h2>
       <p class='subtitle'>
         Curious coder constantly chasing captivating concepts - from theorems to black holes, from proofs to patterns,
