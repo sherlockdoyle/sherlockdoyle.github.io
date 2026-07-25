@@ -157,7 +157,7 @@ body {
 }
 
 main {
-  padding: 0 1rem;
+  padding: 0 0.75rem;
 
   & > section {
     margin-bottom: 1rem;
@@ -189,18 +189,6 @@ main {
   & > header {
     position: relative;
 
-    & > img {
-      display: flex;
-      position: absolute;
-      top: 0;
-      right: 0;
-      justify-content: center;
-      align-items: center;
-      border-radius: 50%;
-      width: 4rem;
-      height: 4rem;
-    }
-
     & > .content {
       & > .eyebrow {
         margin-bottom: 0.5rem;
@@ -217,15 +205,20 @@ main {
         line-height: 1.55;
       }
     }
+
+    & > img {
+      display: flex;
+      position: absolute;
+      top: 0;
+      right: 0;
+      justify-content: center;
+      align-items: center;
+      border-radius: 50%;
+      width: 4rem;
+      height: 4rem;
+    }
   }
 }
-
-/* #resume-btn {
-  border-color: #ccc;
-  padding: 0.2rem 0.75rem;
-  color: #555;
-  font-size: 0.75rem;
-} */
 
 #stats > dl {
   display: flex;
@@ -257,6 +250,8 @@ main {
   gap: 0.5rem 2rem;
 
   & > .category {
+    min-width: 0;
+
     & > h3 {
       margin-bottom: 0.1rem;
       font-weight: 700;

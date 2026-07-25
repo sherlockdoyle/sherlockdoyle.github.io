@@ -120,6 +120,10 @@ import { moreThemes, themes } from './themes';
       requestAnimationFrame(loop);
       new ResizeObserver(init).observe(document.body);
     },
+    undefined: () =>
+      document.body.prepend(
+        document.createTextNode('Curious people know that every variable starts undefined. I like them.'),
+      ),
   };
 
   const theme: Theme = window.__theme;

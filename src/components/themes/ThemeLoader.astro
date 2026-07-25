@@ -2,7 +2,7 @@
 import { KEY, moreThemes, themes } from './themes';
 ---
 
-<script is:inline define:vars={{ KEY, themes: themes.flat(), moreThemes: moreThemes.filter(t => t !== 'undefined') }}>
+<script is:inline define:vars={{ KEY, themes: themes.flat(), moreThemes }}>
   /** @import { Theme } from './themes' */
 
   /** @type {Theme | null} */
@@ -27,21 +27,15 @@ import { KEY, moreThemes, themes } from './themes';
   else theme = 'undefined';
 
   const queryTheme = new URLSearchParams(window.location.search).get('t');
-  if (queryTheme === 'undefined' || themes.includes(queryTheme) || moreThemes.includes(queryTheme)) theme = queryTheme;
+  if (themes.includes(queryTheme) || moreThemes.includes(queryTheme)) theme = queryTheme;
 
   if (!theme) {
-    const availableThemes = themes.filter(t => !seen.includes(t)),
-      a = availableThemes.length;
-    if (a) {
-      const availableMore = moreThemes.filter(t => !seen.includes(t)),
-        b = availableMore.length;
-      const available = Math.random() > (a + b) / (a + 2 * b) ? availableMore : availableThemes;
-      theme = available[Math.floor(Math.random() * available.length)];
-    } else theme = getSystemTheme();
+    const availableThemes = themes.filter(t => !seen.includes(t));
+    theme = availableThemes[Math.floor(Math.random() * availableThemes.length)];
   }
 
   seen.unshift(theme);
-  seen.length = Math.min(seen.length, Math.floor((themes.length + moreThemes.length) * 0.75));
+  seen.length = Math.min(seen.length, Math.floor(themes.length * 0.75));
   localStorage.setItem(KEY, JSON.stringify(seen));
 
   /** @type {Partial<Record<Theme, string>>} */

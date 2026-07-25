@@ -178,7 +178,9 @@ const yoe = Temporal.Now.plainDateISO().since(Temporal.PlainDate.from('2021-08-0
   <section id='projects'>
     <header>
       <h2>Things I've built.</h2>
-      <p>An idea shows up. I get curious. I get coding. I get carried away.</p>
+      <p>
+        An idea shows up. I get curious. I get coding. I get carried away.{nojs ? undefined : ' Go on, click one.'}
+      </p>
     </header>
 
     <ProjectsGrid nojs={nojs} />

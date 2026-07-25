@@ -28,7 +28,7 @@ const { nojs } = Astro.props;
     content = header.querySelector('.content'),
     texts = content.querySelectorAll('.eyebrow, h2, .subtitle'),
     avatar = header.querySelector('img');
-  const GAP = 16;
+  const gap = window.__theme === 'Résumé' ? 8 : 16;
 
   function autoPosition() {
     avatar.style.position = avatar.style.top = avatar.style.right = '';
@@ -51,9 +51,9 @@ const { nojs } = Astro.props;
         const top = rect.top - headerRect.top - contentTop,
           right = rect.right - headerRect.left,
           height = rect.height;
-        if (right <= cx - (r + GAP)) continue;
+        if (right <= cx - (r + gap)) continue;
 
-        const dy = Math.sqrt((r + GAP) ** 2 - Math.max(0, cx - right) ** 2);
+        const dy = Math.sqrt((r + gap) ** 2 - Math.max(0, cx - right) ** 2);
         intervals.push([top - dy, top + height + dy]);
       }
     }
