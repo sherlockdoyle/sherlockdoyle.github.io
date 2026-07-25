@@ -5,6 +5,7 @@ import fs from 'node:fs/promises';
 
 // https://astro.build/config
 export default defineConfig({
+  site: 'https://sherlockdoyle.github.io',
   integrations: [
     {
       name: 'nojs-strip-scripts',
