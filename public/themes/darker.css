@@ -1,0 +1,18 @@
+body {
+  background-color: black;
+}
+dialog {
+  background-color: #121212;
+}
+
+#theme {
+  outline: 1px solid #e0e0e0;
+}
+
+#about > header > img {
+  opacity: 0;
+}
+
+#connect > ul > li > a > svg {
+  fill: black;
+}

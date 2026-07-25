@@ -1,0 +1,142 @@
+---
+import { moreThemes, themes } from './themes';
+---
+
+<button id='theme' command='show-modal' commandfor='theme-dialog'>Theme</button>
+
+<dialog id='theme-dialog' closedby='any' aria-labelledby='theme-dialog-title'>
+  <header>
+    <h2 id='theme-dialog-title'>Themes</h2>
+
+    <button command='close' commandfor='theme-dialog'>Close</button>
+  </header>
+
+  <fieldset>
+    <legend>The page will reload in a flash.</legend>
+    {
+      themes.map((theme, i) =>
+        typeof theme === 'string' ? (
+          <label class:list={['col1', i && 'bt']} style={{ gridRow: i + 1 }}>
+            <input type='radio' name='theme' value={theme} />
+            {theme}
+          </label>
+        ) : (
+          <>
+            <label class:list={['col1', i && 'bt']} style={{ gridRow: i + 1 }}>
+              <input type='radio' name='theme' value={theme[0]} />
+              {theme[0]}
+            </label>
+            <label class:list={['col2', i && 'bt']} style={{ gridRow: i + 1 }}>
+              <input type='radio' name='theme' value={theme[1]} />
+              {theme[1]}
+            </label>
+          </>
+        ),
+      )
+    }
+    {
+      moreThemes.map((theme, i) => (
+        <label class:list={['col3', i && 'bt']} style={{ gridRow: i + 1 }}>
+          <input type='radio' name='theme' value={theme} />
+          {theme}
+        </label>
+      ))
+    }
+  </fieldset>
+</dialog>
+
+<script>
+  import { type Theme } from './themes';
+
+  declare global {
+    interface Window {
+      __theme: Theme;
+    }
+  }
+
+  const actions: Partial<Record<Theme, () => void>> = {
+    Matrix: () => {
+      const canvas = document.createElement('canvas');
+      document.body.prepend(canvas);
+
+      const CHARS =
+        'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&';
+      const FONT_SIZE = 16;
+      const GREEN = '#00ff41',
+        BG_FADE = '#0003000e';
+      const INTERVAL = 50;
+
+      let cols = 0;
+      let drops: number[] = [],
+        speeds: number[] = [];
+      function init() {
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+        canvas.width = width;
+        canvas.height = height;
+
+        const newCols = Math.floor(width / FONT_SIZE);
+
+        if (newCols > cols)
+          for (let i = cols; i < newCols; ++i) {
+            drops.push((Math.random() * -height) / FONT_SIZE);
+            speeds.push(0.4 + Math.random() * 0.6);
+          }
+        else {
+          drops.length = newCols;
+          speeds.length = newCols;
+        }
+
+        cols = newCols;
+      }
+
+      const ctx = canvas.getContext('2d')!;
+      function draw() {
+        ctx.fillStyle = BG_FADE;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.fillStyle = GREEN;
+        ctx.font = `${FONT_SIZE}px 'Courier New', monospace`;
+
+        for (let i = 0; i < cols; ++i) {
+          const ch = CHARS[~~(Math.random() * CHARS.length)];
+          const x = i * FONT_SIZE,
+            y = Math.floor(drops[i]) * FONT_SIZE;
+          ctx.fillText(ch, x, y);
+
+          if (y > canvas.height && Math.random() > 0.975) drops[i] = 0;
+          drops[i] += speeds[i];
+        }
+      }
+
+      let lastTime = 0;
+      function loop(ts: number) {
+        requestAnimationFrame(loop);
+        if (ts - lastTime < INTERVAL) return;
+        lastTime = ts;
+        draw();
+      }
+
+      requestAnimationFrame(loop);
+      new ResizeObserver(init).observe(document.body);
+    },
+  };
+
+  const theme: Theme = window.__theme;
+  actions[theme]?.();
+
+  const fieldset = document.querySelector<HTMLFieldSetElement>('#theme-dialog>fieldset')!;
+  fieldset.addEventListener('change', e => {
+    const target = e.target as HTMLInputElement | null;
+    if (target && target.name === 'theme') {
+      const searchParams = new URLSearchParams(window.location.search);
+      searchParams.set('t', target.value);
+      window.location.search = searchParams.toString();
+    }
+  });
+  fieldset.querySelector<HTMLInputElement>(`input[name="theme"][value="${theme}"]`)!.checked = true;
+
+  const url = new URL(window.location.href);
+  url.searchParams.delete('t');
+  window.history.replaceState(null, '', url);
+</script>

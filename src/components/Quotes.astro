@@ -1,0 +1,128 @@
+<section id='quotes'>
+  <header>
+    <div class='eyebrow'>Creativity</div>
+    <h2>Sometimes I write things that aren't code.</h2>
+    <p>
+      Programming gives you structure. Prose gives you escape. I like both - the shorter the better. I can build entire
+      worlds in two sentences. I'm much better at weaving connections on a page than I am in a room.
+    </p>
+
+    <a class='btn' href='https://sherlockdoyle.github.io/my-quotes' target='_blank'>Read My Quotes &nearr;</a>
+  </header>
+
+  <div class='content'>
+    <ul>
+      <li>
+        <a href='https://sherlockdoyle.github.io/my-quotes/#/quote/csb0qn' target='_blank' rel='noopener noreferrer'>
+          <h3>Five Ways to Love</h3>
+          <p>There are many intricate ways to love a person...</p>
+        </a>
+      </li>
+      <li>
+        <a href='https://sherlockdoyle.github.io/my-quotes/#/quote/cten3w' target='_blank' rel='noopener noreferrer'>
+          <h3>Syntax of Love</h3>
+          <p>
+            After wandering the mall for what felt like hours and counting the number of steps in an escalator, we
+            hopped on a bus.
+          </p>
+        </a>
+      </li>
+      <li>
+        <a href='https://sherlockdoyle.github.io/my-quotes/#/quote/1awzb' target='_blank' rel='noopener noreferrer'>
+          <h3>&nbsp;</h3>
+          <p>&nbsp;</p>
+        </a>
+      </li>
+    </ul>
+
+    <ol></ol>
+  </div>
+
+  <template data-type='quote-item'>
+    <li>
+      <a target='_blank' rel='noopener noreferrer'>
+        <h3></h3>
+      </a>
+    </li>
+  </template>
+</section>
+
+<script>
+  const W: Record<string, number> =
+    // prettier-ignore
+    {'5c':-5,a9:4,lz:-4,qu6:4,'8pf':4,ecv:-3,ys:-3,w6:3,b9:3,oc:-3,jka:3,ul:3,'9n':3,fm:3,'9tl':-3,wc:-3,'6l':3,h6:-3,k8:-3,jc:-3,ca:3,zc:-3,b5xk:-3,t3:3,b5:3,vg:3,yl:-3,of:3,ru:3,'02':3,rk:3,fx:-3,cr:3,'1i':3,can:-2,c:2,et:2,'7yc':2,j8:2,'0jz':-2,'6o':-2,dt:-2,tp:-2,flv:-2,'0y':2,qv:-2,ik:2,'58':-2,b6:2,cl8:-2,f6a:-2,wz:2,'8g':-2,l3:-2,'49c':-2,zs:2,ip:-2,ytx:-2,mr:-2,'8m':2,b3:2,'9a':2,'5r':-2,xm:2,jp:2,uvs:2,cs:2,bf:-2,la:2,zx:2,'2dw':-2,c2v:-2,'467':2,moo:-2,'9qr':-2,nu9k:2,j6:-2,'5xk':-2,jh:2,'095':2,v0f:2,r2:2,'6cv':-2,'2c':-2,bkl:2,'0g':2,wm:-2,w5:2,rm:2,gc:-2,c2:-2,tu:2,'8u':-2,av:-2,u1:2,lt:-2,'233':2,klx:2,'0c':-2,'1uz':-2};
+  function getWeight(id: string): number {
+    const len = id.length;
+    let w = 0;
+    for (let i = 0; i < len; ++i)
+      for (let j = 2; j <= 4; ++j)
+        if (i + j <= len) w += W[id.slice(i, i + j)] ?? 0;
+        else break;
+    return w;
+  }
+
+  const quoteIdAndWeight = Array.from(
+    new Set(
+      Object.values(
+        (await (await fetch('https://sherlockdoyle.github.io/my-quotes/categories.json')).json()) as Record<
+          string,
+          string[]
+        >,
+      ).flat(),
+    ),
+    id => [id, getWeight(id)] satisfies [string, number],
+  );
+  const maxWeight = Math.max(...quoteIdAndWeight.map(([_, w]) => w));
+  const top3QuoteIds = quoteIdAndWeight
+    .map(([id, w]) => [Math.pow(Math.random(), 1 / (maxWeight - w + 1)), id] as const)
+    .sort(([sa], [sb]) => sb - sa)
+    .slice(0, 3)
+    .map(([_, id]) => id);
+
+  const symbolRanges = [
+      [0x2190, 0x70],
+      [0x2200, 0x100],
+      [0x2300, 0x100],
+      [0x2500, 0x80],
+      [0x2580, 0x20],
+      [0x25a0, 0x60],
+      [0x2600, 0x100],
+      [0x2700, 0xc0],
+      [0x2800, 0x100],
+    ],
+    BASE = BigInt(symbolRanges.reduce((acc, [, size]) => acc + size, 0)),
+    MIN = BASE ** 9n,
+    DIFF = BASE ** 10n - MIN;
+  function getSymbol(idx: number): string {
+    for (const [start, size] of symbolRanges) {
+      if (idx < size) return String.fromCodePoint(start + idx);
+      idx -= size;
+    }
+    return '';
+  }
+
+  const PRIME = 309485009821345068724781371n;
+  export function createSymbols(id: string): string {
+    let hash = 144066263297769815596495629667062367629n;
+    for (let i = 0; i < id.length; ++i) hash = BigInt.asUintN(128, (hash ^ BigInt(id.charCodeAt(i))) * PRIME);
+    hash = (hash % DIFF) + MIN;
+
+    let result = '';
+    for (let i = 0; i < 10; ++i) {
+      result += getSymbol(Number(hash % BASE));
+      hash /= BASE;
+    }
+
+    return result;
+  }
+
+  const randomQuotesContainer = document.querySelector('#quotes>.content>ol')!,
+    quoteItem = document.querySelector<HTMLTemplateElement>('template[data-type="quote-item"]')!;
+  top3QuoteIds.forEach(id => {
+    const item = quoteItem.content.cloneNode(true) as DocumentFragment;
+    item.querySelector<HTMLAnchorElement>('li>a')!.href = `https://sherlockdoyle.github.io/my-quotes/#/quote/${id}`;
+    item.querySelector('li>a>h3')!.textContent = createSymbols(id);
+
+    randomQuotesContainer.appendChild(item);
+  });
+</script>

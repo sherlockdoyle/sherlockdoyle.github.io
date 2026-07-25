@@ -1,0 +1,140 @@
+---
+interface Props {
+  className?: string;
+}
+const { className } = Astro.props;
+---
+
+<p class={className}>
+  <span id='me'>Shekhar Dutta</span> - Full Stack Developer &bull; <button id='resume'>Resume &DownArrowBar;</button>
+</p>
+
+<script>
+  let clicks = 0;
+  let timeout: number;
+  document.getElementById('me')!.addEventListener('click', () => {
+    clearTimeout(timeout);
+    if (++clicks === 7) window.location.pathname = window.location.pathname.replace(/\/$/, '') + '/s';
+    else timeout = setTimeout(() => (clicks = 0), 200);
+  });
+
+  document.getElementById('resume')!.addEventListener('click', () => {
+    const doc = document.documentElement.cloneNode(true) as HTMLElement;
+
+    const head = doc.querySelector('head')!;
+    head.querySelector('link[href="/themes/base.css"]')?.remove();
+    head.querySelectorAll('style').forEach(el => {
+      if (
+        el.textContent.match(/@import url\('\/themes\/.+\.css'\) layer\(theme\);/) ||
+        el.textContent.includes('Satоshi')
+      )
+        el.remove();
+    });
+    const style = document.createElement('style');
+    style.textContent = `@import url('${window.location.origin}/themes/resume.css') layer(theme);
+
+#header > ol {
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 0.25rem 0.75rem;
+  margin: -1px 0;
+  list-style: none;
+
+  & > li {
+    color: #333;
+    font-size: 0.8rem;
+
+    & > a {
+      color: #555;
+      text-decoration: none;
+    }
+  }
+}
+
+@media print {
+  @page {
+    margin: 12mm 14mm;
+    size: A4;
+  }
+
+  body {
+    max-width: none;
+  }
+}
+`;
+    head.appendChild(style);
+
+    doc.querySelectorAll('script').forEach(el => el.remove());
+    doc.querySelector('#about>header>img')!.remove();
+    doc.querySelector('#stats>dl>:last-child')!.remove();
+    doc.querySelectorAll('project-card').forEach(el => {
+      if (el.querySelector('article')!.classList.contains('featureless')) el.remove();
+    });
+    // doc.querySelector('#articles')!.remove();
+    doc.querySelector('#quotes')!.remove();
+    doc.querySelector('#footer')!.remove();
+
+    const header = doc.querySelector('#header')!;
+    const linkOl = document.createElement('ol');
+    function createAndInsertLink(name: string, url: string) {
+      const li = document.createElement('li');
+      li.appendChild(document.createTextNode(`${name}: `));
+      const a = document.createElement('a');
+      a.href = url;
+      a.target = '_blank';
+      a.textContent = url.replace(/^([a-z][a-z0-9+\-.]*:)?(\/\/)?(www\.)?/i, '');
+      li.appendChild(a);
+      linkOl.appendChild(li);
+    }
+    createAndInsertLink('Portfolio', window.location.origin);
+    doc.querySelectorAll<HTMLAnchorElement>('#connect>ul>li>a').forEach((el, i) => {
+      if (i < 3) createAndInsertLink(el.textContent, el.href);
+    });
+    header.querySelector('nav')!.replaceWith(linkOl);
+    doc.querySelector('#connect')!.remove();
+
+    doc.querySelector('#resume')!.remove();
+    const aboutPText = doc.querySelector('#about>header>.content>p')!.lastChild as Text;
+    aboutPText.textContent = aboutPText.textContent.replace(' • ', '');
+
+    header.querySelector('h1')!.textContent = 'Resume.SD';
+
+    let numFeatured = Math.min(doc.querySelectorAll('project-card>article.featured').length, 5),
+      numUnfeatured = 5 - numFeatured;
+    doc.querySelectorAll('project-card').forEach(el => {
+      if (el.querySelector('article')!.classList.contains('featured')) {
+        if (--numFeatured < 0) el.remove();
+      } else if (--numUnfeatured < 0) el.remove();
+    });
+
+    const printScript = document.createElement('script');
+    printScript.textContent = `
+window.onload = async () => {
+  if (document.fonts) await document.fonts.ready;
+
+  window.focus();
+  window.print();
+  URL.revokeObjectURL(window.location.href);
+  window.close();
+};
+  `;
+    doc.querySelector('body')!.appendChild(printScript);
+
+    const url = URL.createObjectURL(new Blob(['<!DOCTYPE html>', doc.outerHTML], { type: 'text/html' }));
+    const win = window.open(url, '_blank');
+    if (!win) window.alert('Looks like popups are blocked?');
+  });
+</script>
+
+<style>
+  @layer base {
+    @font-face {
+      src: url('/fonts/Satoshi-Regular.woff2') format('woff2');
+      font-family: 'Satоshi';
+    }
+
+    p {
+      font-family: 'Satоshi';
+    }
+  }
+</style>

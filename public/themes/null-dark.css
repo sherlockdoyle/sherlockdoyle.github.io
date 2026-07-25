@@ -1,0 +1,22 @@
+body,
+dialog {
+  background-color: #121212;
+  color: #e0e0e0;
+}
+
+#about > header > img {
+  filter: invert();
+}
+
+#experience > ol > li:not(:first-child)::before {
+  box-shadow: 0 0 0 2px #121212;
+}
+
+#connect > ul > li > a > svg {
+  &[data-name='GitHub'] {
+    fill: #e9e9e9;
+  }
+  &[data-name='X'] {
+    fill: #ffffff;
+  }
+}

@@ -1,0 +1,94 @@
+---
+import Developer from './Developer.astro';
+---
+
+<section id='about'>
+  <header>
+    <div class='content'>
+      <Developer className='eyebrow' />
+      <h2>If I think it, I build it. The list is infinite.</h2>
+      <p class='subtitle'>
+        Curious coder constantly chasing captivating concepts - from theorems to black holes, from proofs to patterns,
+        from Vue and Lit and <nobr>C++</nobr> to music and philosophy and the odd piece of prose. I explore many fields, and
+        like connecting the dots and finding patterns others might miss.
+      </p>
+    </div>
+    <img src='/avatar.png' alt='Myself' width='128' height='128' />
+  </header>
+</section>
+
+<script is:inline>
+  const about = document.getElementById('about'),
+    header = about.querySelector('header'),
+    content = header.querySelector('.content'),
+    texts = content.querySelectorAll('.eyebrow, h2, .subtitle'),
+    avatar = header.querySelector('img');
+  const GAP = 16;
+
+  function autoPosition() {
+    avatar.style.position = avatar.style.top = avatar.style.right = '';
+    header.style.marginTop = '';
+    if (window.innerWidth >= 768) return;
+
+    const headerRect = header.getBoundingClientRect(),
+      contentTop = content.offsetTop;
+    const d = avatar.offsetWidth,
+      r = d / 2,
+      cx = headerRect.width - r;
+
+    const intervals = [];
+    for (const text of texts) {
+      const range = document.createRange();
+      range.selectNodeContents(text);
+      const rects = range.getClientRects();
+
+      for (const rect of rects) {
+        const top = rect.top - headerRect.top - contentTop,
+          right = rect.right - headerRect.left,
+          height = rect.height;
+        if (right <= cx - (r + GAP)) continue;
+
+        const dy = Math.sqrt((r + GAP) ** 2 - Math.max(0, cx - right) ** 2);
+        intervals.push([top - dy, top + height + dy]);
+      }
+    }
+
+    if (!intervals.length) {
+      avatar.style.position = 'absolute';
+      avatar.style.top = avatar.style.right = '0';
+      return;
+    }
+
+    let targetY = r;
+    let fitsInside = false;
+
+    intervals.sort((a, b) => a[0] - b[0]);
+    const merged = [intervals[0]];
+    for (let i = 1; i < intervals.length; ++i) {
+      let last = merged[merged.length - 1],
+        current = intervals[i];
+      if (last[1] >= current[0]) last[1] = Math.max(last[1], current[1]);
+      else merged.push(current);
+    }
+
+    for (const interval of merged) {
+      if (targetY < interval[0]) {
+        fitsInside = targetY <= headerRect.height - r;
+        break;
+      }
+      if (targetY < interval[1]) targetY = interval[1];
+    }
+
+    if (!fitsInside) fitsInside = targetY <= headerRect.height - r - contentTop;
+    if (!fitsInside) targetY = merged[0][0];
+
+    if (targetY < 0) return;
+
+    avatar.style.position = 'absolute';
+    avatar.style.top = `${targetY - r}px`;
+    avatar.style.right = '0';
+    if (targetY < r) header.style.marginTop = `${r - targetY}px`;
+  }
+  new ResizeObserver(autoPosition).observe(about);
+  document.fonts.ready.then(autoPosition);
+</script>

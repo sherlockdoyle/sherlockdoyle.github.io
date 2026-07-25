@@ -1,0 +1,207 @@
+---
+import About from './About.astro';
+import Connect, { links } from './Connect.astro';
+import projects from './projects/projects';
+import ProjectsGrid from './projects/ProjectsGrid.astro';
+import Quotes from './Quotes.astro';
+import ThemeButton from './themes/ThemeButton.astro';
+
+interface Props {
+  jsEnabled?: boolean;
+}
+const { jsEnabled = true } = Astro.props;
+
+const yoe = Temporal.Now.plainDateISO().since(Temporal.PlainDate.from('2021-08-02'), { largestUnit: 'years' }).years,
+  numProjects = projects.length;
+---
+
+<header id='header'>
+  <h1>Portfolio.SD</h1>
+
+  <nav aria-label='Main Navigation'>
+    <ul>
+      <li class='nav-link'>
+        <a href='#projects'>Projects</a>
+      </li>
+      <!-- <li class='nav-link'>
+        <a href='#articles'>Articles</a>
+      </li> -->
+      <li class='nav-link'>
+        <a href='#quotes'>Quotes</a>
+      </li>
+      <li class='nav-link'>
+        <a href='#connect'>Connect</a>
+      </li>
+      {
+        jsEnabled && (
+          <li>
+            <ThemeButton />
+          </li>
+        )
+      }
+    </ul>
+  </nav>
+</header>
+
+<main>
+  <About />
+
+  <section id='stats'>
+    <dl>
+      <div>
+        <dt>Years of experience</dt>
+        <dd>
+          <data value={yoe} aria-label={`${yoe} years, minimum`}>{yoe}+</data>
+        </dd>
+      </div>
+      <div>
+        <dt>Open source projects</dt>
+        <dd>
+          <data value={numProjects} aria-label={`More than ${numProjects} projects`}>{numProjects}+</data>
+        </dd>
+      </div>
+      <div>
+        <dt>Languages & frameworks</dt>
+        <dd>
+          <data value='10' aria-label='At least 10'>10+</data>
+        </dd>
+      </div>
+      <div>
+        <dt>Ideas left to build</dt>
+        <dd>
+          <data value='Infinity' aria-label='Lots'>&#x221E;+</data>
+        </dd>
+      </div>
+    </dl>
+  </section>
+
+  <section id='skills'>
+    <header>
+      <h2>Core Competencies</h2>
+    </header>
+
+    <div class='grid'>
+      <div class='category'>
+        <h3>Frontend</h3>
+        <ul>
+          <li>React</li>
+          <li>TypeScript</li>
+          <li>CSS / Tailwind</li>
+          <li>Vue</li>
+          <li>Angular</li>
+        </ul>
+      </div>
+      <div class='category'>
+        <h3>Backend</h3>
+        <ul>
+          <li>Java</li>
+          <li>MongoDB</li>
+          <li>SQL</li>
+          <li>Python</li>
+          <li>C++</li>
+        </ul>
+      </div>
+      <div class='category'>
+        <h3>Platform & Infra</h3>
+        <ul>
+          <li>Docker</li>
+          <li>Kubernetes</li>
+          <li>OpenShift</li>
+          <li>ArgoCD</li>
+          <li>Snowflake</li>
+        </ul>
+      </div>
+      <div class='category'>
+        <h3>AI & Algorithms</h3>
+        <ul>
+          <li>ONNX</li>
+          <li>Transformers.js</li>
+          <li>Embeddings</li>
+          <li>OpenGL / Skia</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id='experience'>
+    <header>
+      <h2>Experience</h2>
+    </header>
+
+    <ol>
+      <li>
+        <article>
+          <header>
+            <h3>Associate</h3>
+            <p>Goldman Sachs &bull; 2021 - Present</p>
+          </header>
+          <p>Full stack developer.</p>
+        </article>
+      </li>
+      <li>
+        <article>
+          <header>
+            <h3>Intern</h3>
+            <p>Keysight &bull; 2020 - 2021</p>
+          </header>
+          <p>
+            Built an RDMA agent to drive SmartNICs capable of RoCEv2 hardware offload, and a companion module to
+            simulate NVMe storage workloads over that same transport - so the hardware could be tested end-to-end
+            without actual disks.
+          </p>
+        </article>
+      </li>
+      <li>
+        <article>
+          <header>
+            <h3>Education</h3>
+            <p>Science, CSE &bull; Past - 2021</p>
+          </header>
+          <p>
+            The full story is on <a
+              href={links.find(({ name }) => name === 'LinkedIn')?.url}
+              target='_blank'
+              rel='noopener noreferrer'>LinkedIn</a
+            >, if CVs are your preferred genre of fiction.
+          </p>
+        </article>
+      </li>
+    </ol>
+  </section>
+
+  <section id='projects'>
+    <header>
+      <h2>Things I've built.</h2>
+      <p>An idea shows up. I get curious. I get coding. I get carried away.</p>
+    </header>
+
+    <ProjectsGrid />
+  </section>
+
+  <!-- <section id='articles'>
+    <header>
+      <h2>Technical Writings</h2>
+      <p>I've got a lot to say. Here's where I share it.</p>
+
+      <a class='btn' href='https://sherlockdoyle.github.io/wlog' target='_blank'>View all &nearr;</a>
+    </header>
+
+    <ArticlesList />
+  </section> -->
+
+  <Quotes />
+
+  <Connect />
+</main>
+
+<footer id='footer'>
+  <div>
+    <p title="What's the point of this?">
+      &copy; {new Date().getFullYear()} SD. All rights reserved.
+    </p>
+    <p>
+      Built with <abbr title='Human Intelligence'>HI</abbr>.
+    </p>
+  </div>
+  <p>I like hiding things in plain sight. This page is no exception.</p>
+</footer>

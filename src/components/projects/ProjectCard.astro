@@ -1,0 +1,149 @@
+---
+import type { Project } from './projects';
+import Spanner from './Spanner.astro';
+
+type Props = Project;
+const { id, name, summaryChunks, descriptionChunks, ghUrl, url, date, featured, tags } = Astro.props;
+---
+
+<project-card tabindex='0' role='button' aria-expanded='false' aria-controls={`project-${id}-content`}>
+  <article
+    class:list={{ featured: featured === 1, featureless: featured === -1 }}
+    style={{ viewTransitionName: `project-${id}` }}
+  >
+    <header>
+      <time datetime={date.toISOString()}>{date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</time>
+      <h3>{name}</h3>
+      <button style={{ display: 'none' }} tabindex='-1' aria-label='Collapse details'></button>
+    </header>
+
+    <p id={`project-${id}-content`} style={{ marginBottom: 'var(--mb)' }}>
+      <Spanner id={id} chunks={summaryChunks} />
+    </p>
+
+    <footer style={{ viewTransitionName: `project-${id}-footer` }}>
+      <div class='links' style={{ display: 'none' }}>
+        <a href={ghUrl} target='_blank' rel='noopener noreferrer'>See on GitHub</a>
+        {
+          url && (
+            <a href={url} target='_blank' rel='noopener noreferrer'>
+              See in action
+            </a>
+          )
+        }
+      </div>
+      <div class='tags' style={{ height: 'var(--th)', viewTransitionName: `project-${id}-tags` }}>
+        {tags.map(tag => <span class='tag'>{tag}</span>)}
+      </div>
+    </footer>
+  </article>
+
+  <template data-type='project-summary'>
+    <Spanner id={id} chunks={summaryChunks} />
+  </template>
+  <template data-type='project-description'>
+    <Spanner id={id} chunks={descriptionChunks} />
+  </template>
+</project-card>
+
+<script>
+  class ProjectCard extends HTMLElement {
+    #summary!: string;
+    #description!: string;
+
+    #content!: HTMLParagraphElement;
+    #closeButton!: HTMLButtonElement;
+    #links!: HTMLDivElement;
+    #tags!: HTMLDivElement;
+
+    static observedAttributes = ['aria-expanded'];
+
+    constructor() {
+      super();
+
+      this.handleClick = this.handleClick.bind(this);
+      this.handleKeydown = this.handleKeydown.bind(this);
+      this.handleCloseClick = this.handleCloseClick.bind(this);
+    }
+
+    connectedCallback() {
+      this.#summary = this.querySelector('template[data-type="project-summary"]')!.innerHTML;
+      this.#description = this.querySelector('template[data-type="project-description"]')!.innerHTML;
+      this.#content = this.querySelector('article>p')!;
+      this.#closeButton = this.querySelector('article>header>button')!;
+      this.#links = this.querySelector('.links')!;
+      this.#tags = this.querySelector('.tags')!;
+
+      this.addEventListener('click', this.handleClick);
+      this.addEventListener('keydown', this.handleKeydown);
+      this.#closeButton.addEventListener('click', this.handleCloseClick);
+    }
+    disconnectedCallback() {
+      this.removeEventListener('click', this.handleClick);
+    }
+
+    attributeChangedCallback(name: string, oldValue: string, newValue: string) {
+      if (!this.#content) return;
+
+      if (name === 'aria-expanded' && oldValue !== newValue) this.toggle(newValue === 'true');
+    }
+
+    private handleClick(e: Event) {
+      if (e.target instanceof HTMLButtonElement) return;
+      if (this.ariaExpanded === 'false')
+        this.dispatchEvent(new ToggleEvent('toggle', { newState: 'open', bubbles: true }));
+    }
+
+    private handleKeydown(e: KeyboardEvent) {
+      if (e.target instanceof HTMLButtonElement) return;
+      if (e.key === ' ' || e.key === 'Enter') {
+        e.preventDefault();
+        this.handleClick(e);
+      }
+    }
+
+    private handleCloseClick(e: Event) {
+      e.stopPropagation();
+      if (this.ariaExpanded === 'true')
+        this.dispatchEvent(new ToggleEvent('toggle', { newState: 'closed', bubbles: true }));
+    }
+
+    private toggle(expanded: boolean) {
+      if (expanded) {
+        this.#content.innerHTML = this.#description;
+
+        // we do this in code to make use of view transition
+        this.#content.style.marginBottom = 'var(--emb)';
+        this.#content.style.lineHeight = '1.6';
+        this.#closeButton.style.display = '';
+        this.#closeButton.tabIndex = 0;
+        this.#links.style.display = 'flex';
+        this.#tags.style.height = '';
+        this.#closeButton.focus();
+      } else {
+        this.#content.innerHTML = this.#summary;
+
+        this.#content.style.marginBottom = 'var(--mb)';
+        this.#content.style.lineHeight = '';
+        this.#closeButton.style.display = 'none';
+        this.#closeButton.tabIndex = -1;
+        this.#links.style.display = 'none';
+        this.#tags.style.height = 'var(--th)';
+        this.focus();
+      }
+    }
+  }
+  customElements.define('project-card', ProjectCard);
+</script>
+
+<style is:global>
+  project-card {
+    & > article > p > span {
+      view-transition-name: none;
+    }
+
+    &.transitioning > article > p > span {
+      view-transition-name: var(--vtn);
+    }
+  }
+</style>

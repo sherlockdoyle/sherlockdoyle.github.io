@@ -1,0 +1,280 @@
+:root {
+  --bg: #000300;
+  --fg: #b3ffb3;
+  --matrix-green: #00ff41;
+  --matrix-dim: #008f11;
+  --matrix-bright: #80ff80;
+
+  --text-glow: 0 0 4px var(--matrix-green), 0 0 12px var(--matrix-green), 0 0 24px var(--matrix-green);
+  --box-glow: 0 0 6px var(--matrix-green), inset 0 0 6px color-mix(in oklch, var(--matrix-green), transparent 60%);
+  --box-glow-hover:
+    0 0 14px var(--matrix-green), 0 0 28px color-mix(in oklch, var(--matrix-green), transparent 50%),
+    inset 0 0 10px color-mix(in oklch, var(--matrix-green), transparent 50%);
+}
+
+body,
+dialog {
+  background-image:
+    linear-gradient(color-mix(in oklch, var(--matrix-dim), transparent 90%) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in oklch, var(--matrix-dim), transparent 90%) 1px, transparent 1px);
+  background-size: 20px 20px;
+  background-color: var(--bg);
+  color: var(--fg);
+
+  &::after {
+    display: block;
+    position: fixed;
+    z-index: 1000;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      color-mix(in oklch, var(--bg), transparent 85%) 0px,
+      color-mix(in oklch, var(--bg), transparent 85%) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+    pointer-events: none;
+    content: '';
+  }
+}
+
+canvas {
+  position: fixed;
+  opacity: 0.3;
+  z-index: -1;
+  inset: 0;
+  pointer-events: none;
+}
+
+h1,
+h2,
+h3 {
+  text-shadow: var(--text-glow);
+}
+
+p {
+  text-shadow: 0 0 4px var(--matrix-dim);
+
+  #connect > header > & > span {
+    text-shadow: none;
+  }
+}
+
+#header :is(.nav-link > a, #theme),
+#theme-dialog > header > button,
+project-card > article > footer > .links > a {
+  color: var(--matrix-bright);
+  text-shadow: 0 0 5px var(--matrix-green);
+
+  &:hover {
+    color: #fff;
+    text-shadow:
+      0 0 10px var(--matrix-green),
+      0 0 24px var(--matrix-green);
+  }
+}
+.btn,
+project-card > article > header > button {
+  box-shadow: var(--box-glow);
+  color: var(--matrix-green);
+  text-shadow: 0 0 5px var(--matrix-green);
+
+  &:hover {
+    box-shadow: var(--box-glow-hover);
+    color: #fff;
+    text-shadow:
+      0 0 10px var(--matrix-green),
+      0 0 28px var(--matrix-green);
+  }
+}
+
+#theme-dialog {
+  box-shadow: -4px 0 20px -4px var(--matrix-green);
+  border-left-color: var(--matrix-green);
+
+  @media (max-width: 118rem) {
+    &::backdrop {
+      backdrop-filter: blur(clamp(0px, 25.652173913043477px - 1.358695652173913vw, 10px));
+    }
+  }
+
+  & > fieldset > label {
+    border-color: var(--matrix-dim);
+
+    &:hover {
+      color: var(--matrix-green);
+      text-shadow: 0 0 6px var(--matrix-green);
+    }
+
+    &:has(input:checked)::after {
+      box-shadow: 0 0 8px var(--matrix-green);
+      border-color: var(--matrix-green);
+    }
+  }
+}
+
+#header > h1 {
+  animation: matrix-flicker 5.3s infinite alternate;
+}
+#about > header > img {
+  filter: invert(1) sepia(1) saturate(10) hue-rotate(90deg) drop-shadow(0 0 2px #fff)
+    drop-shadow(0 0 6px var(--matrix-green)) drop-shadow(0 0 18px var(--matrix-green))
+    drop-shadow(0 0 36px var(--matrix-dim));
+  animation: matrix-flicker 4.7s 0.15s infinite alternate;
+}
+@keyframes matrix-flicker {
+  0%,
+  19%,
+  21%,
+  23%,
+  52%,
+  54%,
+  100% {
+    opacity: 1;
+    text-shadow: var(--text-glow);
+  }
+  20%,
+  22%,
+  53% {
+    opacity: 0.25;
+    text-shadow: none;
+  }
+}
+
+#stats > dl > div > dd > data {
+  color: var(--matrix-green);
+  text-shadow: 0 0 14px var(--matrix-green);
+}
+
+#experience > ol {
+  border-color: var(--matrix-dim);
+
+  & > li {
+    &::before {
+      box-shadow: 0 0 6px var(--matrix-green);
+      background-color: var(--matrix-green);
+    }
+
+    &:first-child::before {
+      box-shadow:
+        0 0 8px 2px var(--matrix-bright),
+        0 0 18px var(--matrix-green);
+    }
+  }
+}
+
+project-card {
+  & > article {
+    box-shadow: var(--box-glow);
+    border-color: var(--matrix-dim);
+
+    &.featured {
+      box-shadow:
+        0 0 10px var(--matrix-green),
+        0 0 24px var(--matrix-green),
+        inset 0 0 10px color-mix(in oklch, var(--matrix-green), transparent 60%);
+      border-color: var(--matrix-green);
+    }
+    &.featureless {
+      opacity: 86.7%;
+      box-shadow: none;
+      border-color: color-mix(in oklch, var(--matrix-dim), transparent 30%);
+    }
+
+    & > footer > .tags > span {
+      box-shadow: 0 0 4px var(--matrix-dim);
+      border-color: var(--matrix-dim);
+    }
+  }
+
+  &:hover > article {
+    box-shadow:
+      0 0 14px var(--matrix-green),
+      0 0 30px color-mix(in oklch, var(--matrix-green), transparent 55%),
+      inset 0 0 10px color-mix(in oklch, var(--matrix-green), transparent 55%);
+
+    &.featured {
+      box-shadow:
+        0 0 18px var(--matrix-green),
+        0 0 40px var(--matrix-green),
+        inset 0 0 14px color-mix(in oklch, var(--matrix-green), transparent 50%);
+    }
+  }
+}
+
+#article-list > li {
+  &:not(:last-child) {
+    border-bottom-color: var(--matrix-dim);
+  }
+
+  & > a:hover {
+    box-shadow: inset 0 0 14px color-mix(in oklch, var(--matrix-green), transparent 60%);
+  }
+}
+
+#quotes {
+  box-shadow: var(--box-glow);
+  border-color: var(--matrix-dim);
+
+  & > .content > :is(ul, ol) > li > a {
+    box-shadow: 0 0 5px var(--matrix-dim);
+    border-color: var(--matrix-dim);
+
+    &:hover {
+      box-shadow:
+        0 0 10px var(--matrix-green),
+        inset 0 0 8px color-mix(in oklch, var(--matrix-green), transparent 60%);
+    }
+  }
+}
+
+#connect > ul > li > a {
+  box-shadow: var(--box-glow);
+  border-color: var(--matrix-dim);
+
+  &:hover {
+    box-shadow: var(--box-glow-hover);
+    border-color: var(--matrix-green);
+  }
+
+  & > svg {
+    filter: drop-shadow(0 0 8px var(--matrix-green));
+
+    &[data-name='GitHub'] {
+      filter: drop-shadow(0 0 10px var(--matrix-bright));
+      fill: var(--matrix-bright);
+    }
+    &[data-name='X'] {
+      filter: drop-shadow(0 0 10px var(--matrix-green));
+      fill: var(--matrix-green);
+    }
+  }
+}
+
+#footer {
+  box-shadow: 0 -8px 12px -8px var(--matrix-green);
+  border-top-color: var(--matrix-dim);
+}
+
+html {
+  scrollbar-color: var(--matrix-green) var(--bg);
+  scrollbar-width: auto;
+}
+::-webkit-scrollbar {
+  width: 1rem;
+}
+::-webkit-scrollbar-track {
+  box-shadow:
+    0 0 8px var(--matrix-dim),
+    inset 0 0 8px var(--matrix-dim);
+  border-left: 1px solid var(--matrix-dim);
+  background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+  box-shadow:
+    0 0 16px var(--matrix-green),
+    0 0 36px var(--matrix-green),
+    inset 0 0 16px var(--matrix-green);
+  border-radius: 1rem;
+  background: var(--matrix-green);
+}

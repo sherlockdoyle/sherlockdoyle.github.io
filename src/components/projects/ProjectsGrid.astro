@@ -1,0 +1,103 @@
+---
+import ProjectCard from './ProjectCard.astro';
+import projects from './projects';
+---
+
+<div id='project-grid'>
+  {projects.map(project => <ProjectCard {...project} />)}
+</div>
+
+<script>
+  const grid = document.getElementById('project-grid')!;
+  function getCols() {
+    return window.getComputedStyle(grid).gridTemplateColumns.split(' ').length;
+  }
+
+  function openCard(card: HTMLElement, idx: number) {
+    card.ariaExpanded = 'true';
+    const cols = getCols();
+    if (cols > 1) {
+      card.style.gridRowStart = (Math.floor(idx / cols) + 1).toString();
+      if (cols > 2) card.style.gridRowEnd = 'span 2';
+      card.style.gridColumn = `${Math.min(idx % cols, cols - 2) + 1} / span 2`;
+    }
+  }
+  function closeCard(card: HTMLElement) {
+    card.ariaExpanded = 'false';
+    card.style.gridArea = '';
+  }
+
+  let transitioning = false,
+    expandedIdx = -1;
+  const cards = document.querySelectorAll<HTMLElement>('project-card');
+  cards.forEach((card, i) =>
+    card.addEventListener('toggle', e => {
+      if (transitioning) return;
+
+      transitioning = true;
+      if (e.newState === 'open') {
+        const oldCard = expandedIdx >= 0 ? cards[expandedIdx] : null,
+          newCard = cards[i];
+
+        oldCard?.classList.add('transitioning');
+        newCard.classList.add('transitioning');
+        doViewTransition(
+          () => {
+            if (oldCard) closeCard(oldCard);
+            openCard(newCard, i);
+          },
+          () => {
+            oldCard?.classList.remove('transitioning');
+            newCard.classList.remove('transitioning');
+            expandedIdx = i;
+            transitioning = false;
+          },
+        );
+      } else if (e.newState === 'closed') {
+        const card = cards[expandedIdx];
+
+        card.classList.add('transitioning');
+        doViewTransition(
+          () => {
+            closeCard(card);
+          },
+          () => {
+            card.classList.remove('transitioning');
+            expandedIdx = -1;
+            transitioning = false;
+          },
+        );
+      }
+    }),
+  );
+
+  let lastCols = getCols();
+  new ResizeObserver(() => {
+    if (transitioning || expandedIdx < 0) return;
+
+    const card = cards[expandedIdx];
+    const oldGridColStart = card.style.gridColumnStart,
+      oldGridColEnd = card.style.gridColumnEnd,
+      oldGridRowStart = card.style.gridRowStart,
+      oldGridRowEnd = card.style.gridRowEnd;
+    card.style.gridArea = '';
+    const cols = getCols();
+    if (cols === lastCols) {
+      card.style.gridColumnStart = oldGridColStart;
+      card.style.gridColumnEnd = oldGridColEnd;
+      card.style.gridRowStart = oldGridRowStart;
+      card.style.gridRowEnd = oldGridRowEnd;
+    } else {
+      openCard(card, expandedIdx);
+      lastCols = cols;
+    }
+  }).observe(grid);
+
+  function doViewTransition(fn: () => void, cleanup: () => void) {
+    if (document.startViewTransition) document.startViewTransition(fn).finished.finally(cleanup);
+    else {
+      fn();
+      cleanup();
+    }
+  }
+</script>

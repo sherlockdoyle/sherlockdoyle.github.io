@@ -1,0 +1,13 @@
+body,
+dialog {
+  color: color-mix(in oklch, black, white 75%);
+}
+
+#about > header > img,
+#connect > ul > li > a > svg {
+  opacity: 31.8%;
+}
+
+#experience > ol > li:not(:first-child)::before {
+  box-shadow: 0 0 0 2px white;
+}

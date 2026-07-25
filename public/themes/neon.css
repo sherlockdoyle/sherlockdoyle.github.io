@@ -1,0 +1,277 @@
+:root {
+  --bg: #06020a;
+  --fg: #e0eaff;
+  --neon-1: #f0f;
+  --neon-2: #0ff;
+  --neon-3: #ff0;
+
+  --text-glow: 0 0 5px var(--neon-1), 0 0 15px var(--neon-1), 0 0 30px var(--neon-1);
+}
+
+body,
+dialog {
+  background-image:
+    linear-gradient(color-mix(in oklch, var(--neon-2), transparent 93%) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in oklch, var(--neon-2), transparent 93%) 1px, transparent 1px);
+  background-size: 30px 30px;
+  background-color: var(--bg);
+  color: var(--fg);
+
+  &::after {
+    display: block;
+    position: fixed;
+    z-index: 1000;
+    inset: 0;
+    background: linear-gradient(
+      color-mix(in oklch, var(--bg), transparent 100%) 50%,
+      color-mix(in oklch, var(--bg), transparent 70%) 50%
+    );
+    background-size: 100% 4px;
+    pointer-events: none;
+    content: '';
+  }
+}
+
+h1,
+h2,
+h3 {
+  text-shadow: var(--text-glow);
+}
+
+p {
+  text-shadow: 0 0 3px color-mix(in oklch, var(--fg), transparent 70%);
+
+  #connect > header > & > span {
+    text-shadow: none;
+  }
+}
+
+#header :is(.nav-link > a, #theme),
+#theme-dialog > header > button,
+project-card > article > footer > .links > a {
+  color: var(--neon-3);
+  text-shadow: 0 0 5px var(--neon-3);
+
+  &:hover {
+    color: white;
+    text-shadow:
+      0 0 15px var(--neon-3),
+      0 0 30px var(--neon-3);
+  }
+}
+.btn,
+project-card > article > header > button {
+  box-shadow:
+    0 0 5px var(--neon-3),
+    0 0 5px var(--neon-3) inset;
+  color: var(--neon-3);
+  text-shadow: 0 0 5px var(--neon-3);
+
+  &:hover {
+    box-shadow:
+      0 0 15px var(--neon-3),
+      0 0 5px var(--neon-3) inset;
+    color: white;
+    text-shadow:
+      0 0 15px var(--neon-3),
+      0 0 30px var(--neon-3);
+  }
+}
+
+#theme-dialog {
+  box-shadow: -4px 0 16px -4px var(--neon-2);
+  border-left-color: var(--neon-2);
+
+  @media (max-width: 118rem) {
+    &::backdrop {
+      backdrop-filter: blur(clamp(0px, 25.652173913043477px - 1.358695652173913vw, 10px));
+    }
+  }
+
+  & > fieldset > label {
+    border-color: var(--neon-2);
+
+    &:hover {
+      color: var(--neon-2);
+      text-shadow: 0 0 6px var(--neon-2);
+    }
+
+    &:has(input:checked)::after {
+      box-shadow: 0 0 8px var(--neon-1);
+      border-color: var(--neon-1);
+    }
+  }
+}
+
+#header > h1 {
+  animation: flicker 4.01s infinite alternate;
+}
+#about > header > img {
+  filter: invert(1) drop-shadow(0 0 2px #fff) drop-shadow(0 0 4px var(--neon-2)) drop-shadow(0 0 10px var(--neon-2))
+    drop-shadow(0 0 25px var(--neon-2)) drop-shadow(0 0 50px var(--neon-2));
+  animation: flicker 3.97s 0.02s infinite alternate;
+}
+@keyframes flicker {
+  0%,
+  18%,
+  22%,
+  25%,
+  53%,
+  57%,
+  100% {
+    opacity: 1;
+    text-shadow: var(--text-glow);
+  }
+  20%,
+  24%,
+  55% {
+    opacity: 0.3;
+    text-shadow: none;
+  }
+}
+
+#stats > dl > div > dd > data {
+  color: var(--neon-2);
+  text-shadow: 0 0 15px var(--neon-2);
+}
+
+#experience > ol {
+  border-color: var(--neon-2);
+
+  & > li {
+    &::before {
+      box-shadow: 0 0 6px var(--neon-1);
+      background-color: var(--neon-1);
+    }
+
+    &:first-child::before {
+      box-shadow:
+        0 0 6px 2px var(--neon-3),
+        0 0 14px var(--neon-3);
+    }
+  }
+}
+
+project-card {
+  & > article {
+    box-shadow:
+      0 0 8px var(--neon-2),
+      inset 0 0 8px var(--neon-2);
+    border-color: var(--neon-2);
+
+    &.featured {
+      box-shadow:
+        0 0 12px var(--neon-3),
+        0 0 28px var(--neon-3),
+        inset 0 0 12px var(--neon-3);
+      border-color: var(--neon-3);
+    }
+    &.featureless {
+      opacity: 86.7%;
+      box-shadow: none;
+      border-color: color-mix(in oklch, var(--neon-2), transparent 25%);
+    }
+
+    & > footer > .tags > span {
+      box-shadow: 0 0 4px var(--neon-2);
+      border-color: var(--neon-2);
+    }
+  }
+
+  &:hover > article {
+    box-shadow:
+      0 0 16px var(--neon-2),
+      0 0 32px color-mix(in oklch, var(--neon-2), transparent 60%),
+      inset 0 0 12px var(--neon-2);
+
+    &.featured {
+      box-shadow:
+        0 0 20px var(--neon-3),
+        0 0 40px var(--neon-3),
+        inset 0 0 16px var(--neon-3);
+    }
+  }
+}
+
+#article-list > li {
+  &:not(:last-child) {
+    border-bottom-color: var(--neon-2);
+  }
+
+  & > a:hover {
+    box-shadow: inset 0 0 12px var(--neon-2);
+  }
+}
+
+#quotes {
+  box-shadow:
+    0 0 12px var(--neon-2),
+    inset 0 0 12px var(--neon-2);
+  border-color: var(--neon-2);
+
+  & > .content > :is(ul, ol) > li > a {
+    box-shadow: 0 0 6px var(--neon-1);
+    border-color: var(--neon-1);
+
+    &:hover {
+      box-shadow:
+        0 0 12px var(--neon-1),
+        inset 0 0 8px var(--neon-1);
+    }
+  }
+}
+
+#connect > ul > li > a {
+  box-shadow:
+    0 0 6px var(--neon-2),
+    inset 0 0 6px var(--neon-2);
+  border-color: var(--neon-2);
+
+  &:hover {
+    box-shadow:
+      0 0 12px var(--neon-2),
+      inset 0 0 12px var(--neon-2);
+    border-color: var(--neon-2);
+  }
+
+  & > svg {
+    filter: drop-shadow(0 0 15px);
+
+    &[data-name='GitHub'] {
+      filter: drop-shadow(0 0 15px #e9e9e9);
+      fill: #e9e9e9;
+    }
+    &[data-name='X'] {
+      filter: drop-shadow(0 0 15px #fff);
+      fill: #fff;
+    }
+  }
+}
+
+#footer {
+  box-shadow: 0 -8px 10px -8px var(--neon-2);
+  border-top-color: var(--neon-2);
+}
+
+html {
+  scrollbar-color: var(--neon-1) var(--bg);
+  scrollbar-width: auto;
+}
+::-webkit-scrollbar {
+  width: 1rem;
+}
+::-webkit-scrollbar-track {
+  box-shadow:
+    0 0 10px var(--neon-2),
+    inset 0 0 10px var(--neon-2);
+  border-left: 1px solid var(--neon-2);
+  background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+  box-shadow:
+    0 0 20px var(--neon-1),
+    0 0 40px var(--neon-1),
+    inset 0 0 20px var(--neon-1);
+  border-radius: 1rem;
+  background: var(--neon-1);
+}

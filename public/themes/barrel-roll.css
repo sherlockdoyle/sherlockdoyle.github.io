@@ -1,0 +1,34 @@
+@import url('null.css') (prefers-color-scheme: light);
+@import url('null-dark.css') (prefers-color-scheme: dark);
+
+:is(
+  body *:not(main, main > section, #project-grid, project-card, project-card > article),
+  #project-grid > project-card
+) {
+  &:nth-child(3n + 1) {
+    --dur: 23s;
+    --dir: reverse;
+  }
+  &:nth-child(5n + 2) {
+    --dur: 31s;
+    --dir: alternate;
+  }
+  &:nth-child(7n + 3) {
+    --dur: 13s;
+    --dir: alternate-reverse;
+  }
+}
+body *:not(main, main > section, #project-grid, project-card) {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: roll var(--dur, 19s) linear infinite var(--dir, normal);
+
+  &:hover {
+    animation-play-state: paused;
+  }
+}
+@keyframes roll {
+  100% {
+    transform: rotate(360deg);
+  }
+}

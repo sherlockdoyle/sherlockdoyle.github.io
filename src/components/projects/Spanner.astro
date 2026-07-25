@@ -1,0 +1,15 @@
+---
+import type { Chunk } from './projects';
+
+interface Props {
+  id: string;
+  chunks: Chunk[];
+}
+const { id, chunks } = Astro.props;
+---
+
+{
+  chunks.map(chunk =>
+    chunk.id == null ? chunk.text : <span style={{ '--vtn': `project-${id}-c${chunk.id}` }}>{chunk.text}</span>,
+  )
+}

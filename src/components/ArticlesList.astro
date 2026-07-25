@@ -1,0 +1,52 @@
+<ul id='article-list'>
+  <template data-type='article-item'>
+    <li>
+      <a target='_blank'>
+        <time></time>
+        <h3></h3>
+        <p></p>
+      </a>
+    </li>
+  </template>
+</ul>
+
+<script>
+  const articles: {
+    title: string;
+    summary: string;
+    date: Date;
+    url: string;
+  }[] = [
+    {
+      title: 'cStDf',
+      summary:
+        'A collection of fun browser-based puzzles and riddles where the goal is to find a hidden string - like a mini CTF game.',
+      date: new Date('2024-04-07T13:54:27Z'),
+      url: 'https://github.com/sherlockdoyle/cStDf',
+    },
+    {
+      title: 'antonemo',
+      summary:
+        'A daily word game where you unlock letters by finding antonyms and work your way toward one secret final word.',
+      date: new Date('2023-09-18T09:59:15Z'),
+      url: 'https://github.com/sherlockdoyle/antonemo',
+    },
+  ];
+
+  const articleList = document.getElementById('article-list')!,
+    articleItem = document.querySelector<HTMLTemplateElement>('template[data-type="article-item"]')!;
+  articles.forEach(article => {
+    const item = articleItem.content.cloneNode(true) as DocumentFragment;
+    const link = item.querySelector<HTMLAnchorElement>('li>a')!;
+    link.href = article.url;
+
+    const time = link.querySelector('time')!;
+    time.dateTime = article.date.toISOString();
+    time.textContent = article.date.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' });
+
+    link.querySelector('h3')!.textContent = article.title;
+    link.querySelector('p')!.textContent = article.summary;
+
+    articleList.appendChild(item);
+  });
+</script>
