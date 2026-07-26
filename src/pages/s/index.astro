@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang='en'>
+  <head>
+    <meta charset='UTF-8' />
+    <meta name='viewport' content='width=device-width' />
+    <link rel='icon' href='/avatar.png' />
+    <title>Secret Diary</title>
+  </head>
+
+  <body>
+    <noscript><p><em>You need JavaScript to decrypt the secrets.</em></p></noscript>
+
+    <p>
+      You have found the hidden layer. The other side is built to be seen, but I have a habit of leaving things for
+      those who look closely. This space is a repository for thoughts, observations, and entries meant for specific
+      people - a quiet corner away from the public eye.
+    </p>
+    <p>
+      There is no index here. Access requires knowing the right key. I might have written something about you, <strong
+        >enter your name</strong
+      > below to find out. Use only lowercase letters, without any spaces (just a-z). Try variations: your first name, the
+      name I usually call you by, or how I might have saved your contact.
+    </p>
+
+    <form class='input-area'>
+      <input name='name' type='text' placeholder='Enter name...' spellcheck='false' autocomplete='off' />
+      <button type='submit'>Load</button>
+    </form>
+    <hr />
+    <div id='result'></div>
+  </body>
+</html>
+
+<script>
+  import { parse } from 'tiny-markdown-parser';
+  import { decrypt, encrypt, fromBase38, toBase38 } from '../../utils/coder';
+
+  const result = document.getElementById('result')!;
+  async function loadMd(path_38: string, pass: string) {
+    result.textContent = 'Loading...';
+
+    const res = await fetch(`/s/${path_38}`);
+    if (!res.ok) {
+      result.textContent = 'Error: Nothing was found for that.';
+      return;
+    }
+
+    const md = decrypt(await res.text(), pass);
+    const html = parse(md);
+    result.innerHTML = html;
+    result.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  const url = new URL(window.location.href);
+  const key = url.searchParams.keys().next().value;
+  if (key) {
+    const [key_38, from] = key.split('~');
+    const value_38 = url.searchParams.get(key);
+    if (value_38) loadMd(key_38, fromBase38(value_38));
+
+    url.searchParams.delete(key);
+    window.history.replaceState(null, '', url);
+
+    const p = document.createElement('p');
+    p.textContent = `Looks like you came from ${decrypt(fromBase38(from), key_38)}. Welcome to my secrets!`;
+    document.body.prepend(p);
+  }
+
+  const form = document.forms[0];
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const val = new FormData(form).get('name') as string;
+    if (val) {
+      const name = encrypt(val, val);
+      loadMd(toBase38(name), encrypt(name, val));
+    }
+  });
+</script>
+
+<style is:global>
+  body {
+    margin: 0 auto;
+    background-color: #0a0a0a;
+    padding: 1.5rem;
+    max-width: 48rem;
+    color: #e5e5e5;
+    font-size: 1.1em;
+    line-height: 1.6;
+    font-family: 'Courier New', Courier, monospace;
+    overflow-wrap: break-word;
+  }
+
+  .input-area {
+    display: flex;
+    gap: 1rem;
+    margin-block: 2rem;
+
+    & > input {
+      flex: 1;
+      outline: none;
+      border: 1px solid color-mix(in oklch, currentColor 15%, transparent);
+      background-color: transparent;
+      padding: 0.5rem 1rem;
+      color: inherit;
+      font-size: inherit;
+      font-family: inherit;
+
+      &:focus {
+        border-color: color-mix(in oklch, currentColor 45%, transparent);
+      }
+    }
+
+    & > button {
+      cursor: pointer;
+      border: 1px solid color-mix(in oklch, currentColor 15%, transparent);
+      background-color: color-mix(in oklch, currentColor 10%, transparent);
+      padding: 0.5rem 1.5rem;
+      color: inherit;
+      font-size: inherit;
+      font-family: inherit;
+
+      &:hover,
+      &:focus-visible {
+        border-color: currentColor;
+        background: color-mix(in oklch, currentColor 25%, transparent);
+      }
+
+      &:active {
+        transform: scale(0.97);
+        border-color: color-mix(in oklch, currentColor 50%, transparent);
+        background: color-mix(in oklch, currentColor 15%, transparent);
+      }
+    }
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin-block: 1.5em 0.5em;
+    font-weight: 600;
+    line-height: 1.25;
+  }
+
+  p,
+  ul,
+  ol,
+  blockquote,
+  pre,
+  table,
+  hr {
+    margin-block: 0 1.5em;
+  }
+
+  a {
+    border-radius: 0.2em;
+    color: currentColor;
+    text-decoration-thickness: 0.1em;
+    text-underline-offset: 0.2em;
+
+    &:hover,
+    &:focus-visible {
+      background-color: color-mix(in oklch, currentColor 10%, transparent);
+      text-decoration-color: transparent;
+    }
+  }
+
+  ul,
+  ol {
+    padding-inline-start: 2ch;
+
+    li {
+      margin-block-end: 0.25em;
+
+      & > ul,
+      & > ol {
+        margin-block-start: 0.25em;
+        margin-block-end: 0;
+      }
+    }
+  }
+
+  blockquote {
+    margin-inline: 0;
+    border-inline-start: 0.25em solid color-mix(in oklch, currentColor 30%, transparent);
+    padding-inline-start: 1.5ch;
+    color: color-mix(in oklch, currentColor 80%, transparent);
+  }
+
+  code {
+    border-radius: 0.25em;
+    background-color: color-mix(in oklch, currentColor 8%, transparent);
+    padding: 0.2em 0.4em;
+    font-size: 0.9em;
+    font-family: ui-monospace, monospace;
+  }
+
+  pre {
+    border-radius: 0.5em;
+    background-color: color-mix(in oklch, currentColor 4%, transparent);
+    padding: 1em;
+    overflow-x: auto;
+
+    code {
+      background-color: transparent;
+      padding: 0;
+      font-size: 0.85em;
+    }
+  }
+
+  hr {
+    margin-block: 2em;
+    border: none;
+    border-block-start: 1px solid color-mix(in oklch, currentColor 35%, transparent);
+  }
+
+  img {
+    border-radius: 0.25em;
+    max-width: 100%;
+    height: auto;
+  }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+
+    th,
+    td {
+      border-block-end: 1px solid color-mix(in oklch, currentColor 25%, transparent);
+      padding: 0.5em 1em;
+      text-align: start;
+    }
+
+    th {
+      background-color: color-mix(in oklch, currentColor 5%, transparent);
+    }
+
+    tr:hover td {
+      background-color: color-mix(in oklch, currentColor 3%, transparent);
+    }
+  }
+</style>

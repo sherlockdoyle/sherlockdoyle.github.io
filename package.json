@@ -9,7 +9,11 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "build:diaries": "node scripts/build-diaries.ts"
+  },
+  "dependencies": {
+    "tiny-markdown-parser": "^1.0.1"
   },
   "devDependencies": {
     "@types/node": "^26.1.1",
