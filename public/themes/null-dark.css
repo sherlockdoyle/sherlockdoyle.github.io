@@ -14,9 +14,9 @@ dialog {
 
 #connect > ul > li > a > svg {
   &[data-name='GitHub'] {
-    fill: #e9e9e9;
+    fill: #cecece;
   }
   &[data-name='X'] {
-    fill: #ffffff;
+    fill: #e0e0e0;
   }
 }

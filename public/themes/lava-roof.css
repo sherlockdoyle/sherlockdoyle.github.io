@@ -1,0 +1,95 @@
+html {
+  scroll-padding-top: 4rem;
+}
+
+body,
+dialog {
+  background-color: #0a0a0a;
+  color: #fff2e6;
+}
+* {
+  text-shadow: 0 0 3px #0a0a0a;
+}
+
+#header {
+  filter: url(#lava-flow);
+  overflow: hidden;
+
+  &::before {
+    position: absolute;
+    z-index: -1;
+    filter: url(#lava);
+    inset: -10px;
+    content: '';
+  }
+}
+
+#about > header > img {
+  filter: invert(83%) sepia(24%) saturate(5746%);
+}
+
+#connect > ul > li > a > svg {
+  &[data-name='GitHub'] {
+    fill: #fbd9c0;
+  }
+  &[data-name='X'] {
+    fill: #fff2e6;
+  }
+}
+
+.fire {
+  position: relative;
+  animation: flicker 0.3s linear infinite alternate;
+  outline: 1px solid #ffba00;
+  box-shadow:
+    0 0 20px #ffba00,
+    0 -10px 20px #ff450099,
+    inset 0 0 15px #ff000080;
+
+  &::before {
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    content: '';
+  }
+}
+@keyframes flicker {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+    filter: drop-shadow(0 0 2px #ffba00) hue-rotate(-10deg);
+  }
+  100% {
+    transform: scale(1.001);
+    opacity: 0.85;
+    filter: drop-shadow(0 0 15px #ff0000) hue-rotate(10deg);
+  }
+}
+
+#filters {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+
+#burn {
+  position: absolute;
+  z-index: 10;
+  inset: 0;
+  border: none;
+  background: none;
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  max-height: none;
+  overflow: hidden;
+  pointer-events: none;
+
+  &::backdrop {
+    background: none;
+  }
+
+  & > canvas {
+    position: absolute;
+  }
+}

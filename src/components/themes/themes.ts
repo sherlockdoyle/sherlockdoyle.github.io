@@ -7,13 +7,7 @@ export const themes = [
   'Neon',
   'Matrix',
 ] as const;
-export const moreThemes = [
-  'undefined',
-  'lighter',
-  'darker',
-  'Barrel Roll',
-  // 'The roof is lava'
-] as const;
+export const moreThemes = ['undefined', 'lighter', 'darker', 'Barrel Roll', 'The roof is lava'] as const;
 
 type Flatten<T extends string | readonly string[]> = T extends string ? T : T[number];
 export type Theme = Flatten<(typeof themes)[number]> | (typeof moreThemes)[number];
