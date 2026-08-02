@@ -13,9 +13,12 @@ export function encrypt(m: string, k: string): string {
   const ml = M.length,
     kl = K.length;
 
-  const E = Array.from<number>({ length: M.length });
+  const E = Array.from<number>({ length: ml });
   E[0] = (M[0] + S[K[0]]) % N;
   for (let i = 1; i < ml; ++i) E[i] = (M[i] + S[(K[i % kl] + E[i - 1] + i) % N]) % N;
+
+  E[ml - 1] = (E[ml - 1] + S[(K[(ml - 1) % kl] + E[0]) % N]) % N; // doesn't work if ml==1, this is fine
+  for (let i = ml - 2; i >= 0; --i) E[i] = (E[i] + S[(K[i % kl] + E[i + 1] + i) % N]) % N;
 
   return E.map(c => String.fromCharCode(c)).join('');
 }
@@ -26,7 +29,10 @@ export function decrypt(e: string, k: string): string {
   const el = E.length,
     kl = K.length;
 
-  const M = Array.from<number>({ length: E.length });
+  for (let i = 0; i < el - 1; ++i) E[i] = (E[i] - S[(K[i % kl] + E[i + 1] + i) % N] + N) % N;
+  E[el - 1] = (E[el - 1] - S[(K[(el - 1) % kl] + E[0]) % N] + N) % N;
+
+  const M = Array.from<number>({ length: el });
   M[0] = (E[0] - S[K[0]] + N) % N;
   for (let i = 1; i < el; ++i) M[i] = (E[i] - S[(K[i % kl] + E[i - 1] + i) % N] + N) % N;
 

@@ -10,7 +10,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "build:diaries": "node scripts/build-diaries.ts"
+    "build:diaries": "node scripts/build-diaries.ts",
+    "test:coder": "node src/utils/coder.test.ts"
   },
   "dependencies": {
     "tiny-markdown-parser": "^1.0.1"
