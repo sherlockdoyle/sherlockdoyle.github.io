@@ -39,7 +39,8 @@ const { nojs, className } = Astro.props;
         el.remove();
     });
     const style = document.createElement('style');
-    style.textContent = `@import url('${window.location.origin}/themes/resume.css') layer(theme);
+    style.textContent = `
+@import url('${window.location.origin}/themes/resume.css') layer(theme);
 
 #header > ol {
   display: grid;
@@ -67,6 +68,10 @@ const { nojs, className } = Astro.props;
 
   body {
     max-width: none;
+  }
+
+  project-card > article {
+    page-break-inside: avoid;
   }
 }
 `;
@@ -121,11 +126,13 @@ window.onload = async () => {
   if (document.fonts) await document.fonts.ready;
 
   window.focus();
+  setTimeout(() => {
+    URL.revokeObjectURL(window.location.href);
+    window.close();
+  }, 5000);
   window.print();
-  URL.revokeObjectURL(window.location.href);
-  window.close();
 };
-  `;
+`;
     doc.querySelector('body')!.appendChild(printScript);
 
     const url = URL.createObjectURL(new Blob(['<!DOCTYPE html>', doc.outerHTML], { type: 'text/html' }));

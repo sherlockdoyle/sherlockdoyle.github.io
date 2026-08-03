@@ -11,24 +11,37 @@ const { nojs } = Astro.props;
 <html lang='en'>
   <head>
     <meta charset='UTF-8' />
-    <meta name='viewport' content='width=device-width' />
-    <link rel='icon' href='/avatar.png' />
-    <link rel='preload' href='https://fonts.cdnfonts.com/css/satoshi' as='style' />
+    <meta name='viewport' content='width=device-width, initial-scale=1' />
     <title>ME... SD</title>
     <meta
       name='description'
       content='Shekhar Dutta - full stack developer. I build productivity tools by day and weird side projects by night: games, compilers, libraries, and everything in between.'
     />
+
+    <meta property='og:type' content='website' />
+    <meta property='og:url' content={Astro.site} />
     <meta property='og:title' content='Sherlock Doyle · Portfolio' />
     <meta
       property='og:description'
       content='Full stack developer. Building things for fun - games, tools, libraries, and the occasional programming language.'
     />
-    <meta property='og:type' content='website' />
-    <meta property='og:url' content='https://sherlockdoyle.github.io/' />
-    <meta property='og:image' content='/avatar.png' />
-    <meta name='twitter:card' content='summary' />
+    <meta property='og:image' content={`${Astro.site}/ratava.png`} />
+    <meta property='og:image:width' content='1200' />
+    <meta property='og:image:height' content='630' />
+
+    <meta name='twitter:card' content='summary_large_image' />
     <meta name='twitter:creator' content='@SherlockDoyle4' />
+    <meta name='twitter:title' content='Sherlock Doyle · Portfolio' />
+    <meta
+      name='twitter:description'
+      content='A seemingly ordinary developer by daylight... but when darkness falls, cryptic tools, strange games, and arcane programming languages awaken in the shadows.'
+    />
+    <meta name='twitter:image' content={`${Astro.site}/ratava.png`} />
+
+    <link rel='icon' type='image/png' sizes='512x512' href='/avatar.png' />
+    <link rel='apple-touch-icon' sizes='512x512' href='/avatar.png' />
+
+    <link rel='preload' href='https://fonts.cdnfonts.com/css/satoshi' as='style' />
     <style is:inline>
       @layer reset, base, theme;
     </style>
