@@ -1,0 +1,53 @@
+@import url('null.css') (prefers-color-scheme: light);
+@import url('null-dark.css') (prefers-color-scheme: dark);
+
+:root {
+  --bg: light-dark(transparent, #121212);
+  color-scheme: light dark;
+}
+
+body {
+  animation:
+    bg 59s infinite linear,
+    skl 199s infinite linear,
+    flkr 101s infinite steps(1);
+}
+@keyframes bg {
+  2%,
+  97% {
+    background-color: var(--bg);
+  }
+  23% {
+    background-color: color-mix(in oklch, var(--bg), #f00 5%);
+  }
+  53% {
+    background-color: color-mix(in oklch, var(--bg), #0f0 5%);
+  }
+  73% {
+    background-color: color-mix(in oklch, var(--bg), #00f 5%);
+  }
+}
+@keyframes skl {
+  0%,
+  100% {
+    transform: scale(0.99);
+  }
+  47% {
+    transform: scale(1.01);
+  }
+}
+@keyframes flkr {
+  0%,
+  99.97%,
+  100% {
+    opacity: 1;
+  }
+  99.985% {
+    opacity: 0;
+  }
+}
+
+.tags {
+  --th: calc(1.7rem + 4px);
+  padding: 1px;
+}
