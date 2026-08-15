@@ -1,0 +1,13 @@
+@import url('./cartuni-common.css');
+
+:root {
+  --c-bg: oklch(0.975 0 0);
+  --c-text: oklch(0.35 0 0);
+  --c-border: oklch(0.35 0 0);
+  --c-primary: oklch(0.775 0.082 245);
+  --c-muted: oklch(0.84 0 0);
+  --c-shadow: oklch(0.31 0.0195 240 / 0.7);
+
+  --r1: 73px 8px 37px 2px / 8px 26px 9px 69px;
+  --r2: 3px 25px 2px 32px / 78px 7px 98px 7px;
+}

@@ -1,0 +1,26 @@
+@import url('./cartuni-common.css');
+
+:root {
+  --c-bg: oklch(0.28 0 0);
+  --c-text: oklch(0.975 0 0);
+  --c-border: oklch(0.9 0.0114 240);
+  --c-primary: oklch(0.55 0.095 245);
+  --c-muted: oklch(0.42 0.0246 240);
+  --c-shadow: oklch(0 0 0 / 0.7);
+
+  --r1: 7px 33px 2px 76px / 79px 8px 66px 9px;
+  --r2: 32px 7px 27px 3px / 8px 47px 2px 65px;
+}
+
+#about > header > img {
+  filter: invert();
+}
+
+#connect > ul > li > a > svg {
+  &[data-name='GitHub'] {
+    fill: #cecece;
+  }
+  &[data-name='X'] {
+    fill: #e0e0e0;
+  }
+}

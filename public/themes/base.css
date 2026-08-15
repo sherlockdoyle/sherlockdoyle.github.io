@@ -527,13 +527,34 @@
         align-self: start;
       }
 
-      @media (min-width: 768px) {
+      @media (width >= 768px) {
         grid-template-areas:
           'h2 btn'
           'p btn';
 
         & > a {
           align-self: end;
+        }
+      }
+
+      @media (480px <= width < 768px) {
+        & > a {
+          margin-bottom: -0.5rem;
+        }
+      }
+
+      @media (width < 480px) {
+        grid-template-areas:
+          'h2'
+          'p'
+          'btn';
+
+        & > p {
+          margin-bottom: 1.5rem;
+        }
+
+        & > a {
+          justify-self: start;
         }
       }
     }

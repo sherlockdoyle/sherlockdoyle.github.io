@@ -7,8 +7,9 @@ import { KEY, moreThemes, themes } from './themes';
 
   /** @type {Theme | null} */
   let theme = null;
+  /** @returns {Theme} */
   function getSystemTheme() {
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark null' : 'null';
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'cartUnI dark' : 'cartUnI';
   }
 
   /** @type {Theme[]} */
@@ -42,6 +43,8 @@ import { KEY, moreThemes, themes } from './themes';
   const themeCss = {
       null: 'null',
       'dark null': 'null-dark',
+      cartUnI: 'cartuni',
+      'cartUnI dark': 'cartuni-dark',
       Résumé: 'resume',
       Neon: 'neon',
       Matrix: 'matrix',
