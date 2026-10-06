@@ -10,6 +10,10 @@ const { id, chunks } = Astro.props;
 
 {
   chunks.map(chunk =>
-    chunk.id == null ? chunk.text : <span style={{ '--vtn': `project-${id}-c${chunk.id}` }}>{chunk.text}</span>,
+    chunk.id == null ? (
+      chunk.text
+    ) : (
+      <span style={{ '--vtn': `project-${id.replace(/[^a-zA-Z0-9]/g, '')}-c${chunk.id}` }}>{chunk.text}</span>
+    ),
   )
 }

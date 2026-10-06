@@ -1,6 +1,13 @@
 export const KEY = 'Portfolio.SD';
 
-export const themes = [['null', 'dark null'], ['cartUnI', 'cartUnI dark'], 'Résumé', 'Neon', 'Matrix'] as const;
+export const themes = [
+  ['null', 'dark null'],
+  ['cartUnI', 'cartUnI dark'],
+  'Résumé',
+  'Neon',
+  'Matrix',
+  'Windows',
+] as const;
 export const moreThemes = [
   'undefined',
   'lighter',

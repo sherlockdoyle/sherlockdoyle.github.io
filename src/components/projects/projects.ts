@@ -21,6 +21,30 @@ export type Project = Omit<RawProject, 'summary' | 'description' | 'date'> & {
 
 const projects: RawProject[] = [
   {
+    name: 'W(log)',
+    summary: 'A personal blog about math, physics, and computer science - written Without Loss Of Generality.',
+    description:
+      'W(log) is a personal blog where I write about mathematics, physics, computer science, and other STEM topics. Posts range from puzzle-solving and number theory to interactive explorations with diagrams and equations. The blog has a clean, minimal look with a search page to dig through everything, and an RSS feed to follow along.',
+    ghUrl: 'https://github.com/sherlockdoyle/wlog',
+    url: 'https://sherlockdoyle.github.io/wlog/',
+    date: '2026-09-24T20:31:15Z',
+    featured: 1,
+    tags: [
+      'blog',
+      'math',
+      'physics',
+      'computer-science',
+      'stem',
+      'writing',
+      'astro',
+      'svelte',
+      'mdx',
+      'katex',
+      'pagefind',
+      'typescript',
+    ],
+  },
+  {
     name: 'cartUnI',
     summary: 'A set of hand-drawn, sketch-styled React UI components that give your app a playful, paper-doodle look.',
     description:
