@@ -1,15 +1,14 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
+import { transform } from 'esbuild';
 import { parse } from 'node-html-parser';
 import fs from 'node:fs/promises';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 
-const site = 'https://sherlockdoyle.github.io';
+const themesPath = './src/components/themes/css';
 
 // https://astro.build/config
 export default defineConfig({
-  site,
+  site: 'https://sherlockdoyle.github.io',
   integrations: [
     {
       name: 'nojs-strip-scripts',
@@ -26,28 +25,23 @@ export default defineConfig({
       },
     },
     {
-      name: 'build-sitemap',
+      name: 'theme-compiler',
       hooks: {
-        'astro:build:done': async ({ dir, logger }) => {
-          const { default: projects } = await import('./src/components/projects/projects.ts');
-
-          const entries = [{ url: site + '/', date: new Date() }];
-          for (const project of projects)
-            if (project.url?.startsWith(site)) entries.push({ url: project.url, date: project.date });
-
-          const xml = [
-            '<?xml version="1.0" encoding="UTF-8"?>',
-            '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
-            ...entries.map(
-              ({ url, date }) =>
-                `  <url>\n    <loc>${url}</loc>\n    <lastmod>${date.toISOString().split('T')[0]}</lastmod>\n  </url>`,
-            ),
-            '</urlset>',
-          ].join('\n');
-
-          const outPath = path.join(fileURLToPath(dir), 'sitemap.xml');
-          await fs.writeFile(outPath, xml, 'utf-8');
-          logger.info(`Sitemap written with ${entries.length} URL(s).`);
+        'astro:server:setup': ({ server }) => {
+          server.middlewares.use('/themes', async (req, res) => {
+            const raw = await fs.readFile(`${themesPath}${req.url}`, 'utf-8');
+            res.setHeader('Content-Type', 'text/css');
+            res.end(raw);
+          });
+        },
+        'astro:build:done': async ({ dir }) => {
+          const outDir = new URL('./themes/', dir);
+          await fs.mkdir(outDir, { recursive: true });
+          for (const file of await fs.readdir(themesPath)) {
+            const raw = await fs.readFile(`${themesPath}/${file}`, 'utf-8');
+            const minified = await transform(raw, { loader: 'css', minify: true });
+            fs.writeFile(new URL(file, outDir), minified.code);
+          }
         },
       },
     },

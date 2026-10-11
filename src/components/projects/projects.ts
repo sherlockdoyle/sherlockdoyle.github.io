@@ -29,20 +29,7 @@ const projects: RawProject[] = [
     url: 'https://sherlockdoyle.github.io/wlog/',
     date: '2026-09-24T20:31:15Z',
     featured: 1,
-    tags: [
-      'blog',
-      'math',
-      'physics',
-      'computer-science',
-      'stem',
-      'writing',
-      'astro',
-      'svelte',
-      'mdx',
-      'katex',
-      'pagefind',
-      'typescript',
-    ],
+    tags: ['blog', 'math', 'physics', 'computer-science', 'stem', 'astro', 'svelte', 'mdx', 'katex', 'typescript'],
   },
   {
     name: 'cartUnI',
@@ -336,7 +323,7 @@ function buildChunks(str: string, matches: Match[], is1: boolean) {
     const words = match.text.split(' ');
     for (let i = 0; i < words.length; ++i) {
       if (i > 0) chunks.push({ text: ' ' });
-      chunks.push({ text: words[i], id: match.id * 100 + i }); // 100 is safe-ish, we probably more than 100 words in any match.
+      chunks.push({ text: words[i], id: match.id * 100 + i }); // 100 is safe-ish, we probably don't have more than 100 words in any match.
     }
 
     curIdx = start + match.text.length;
@@ -394,8 +381,14 @@ function getMatchingChunks(s1: string, s2: string): [Chunk[], Chunk[]] {
   return [buildChunks(s1, matches, true), buildChunks(s2, matches, false)];
 }
 
-export default projects.map<Project>(({ name, summary, description, date, ...rest }) => {
+export default projects.map<Project>(({ name, summary, description, date, ...rest }, i) => {
+  let id = '';
+  while (i >= 0) {
+    id += String.fromCharCode(97 + (i % 26));
+    i = Math.floor(i / 26) - 1;
+  }
+
   const [summaryChunks, descriptionChunks] = getMatchingChunks(summary, description);
 
-  return { id: name.replace(/\s/g, '-'), name, summaryChunks, descriptionChunks, date: new Date(date), ...rest };
+  return { id, name, summaryChunks, descriptionChunks, date: new Date(date), ...rest };
 });

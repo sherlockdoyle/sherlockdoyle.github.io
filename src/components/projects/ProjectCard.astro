@@ -38,12 +38,13 @@ const { nojs, id, name, summaryChunks, descriptionChunks, ghUrl, url, date, feat
     </footer>
   </article>
 
-  <template data-type='project-summary'>
-    <Spanner id={id} chunks={summaryChunks} />
-  </template>
-  <template data-type='project-description'>
-    <Spanner id={id} chunks={descriptionChunks} />
-  </template>
+  {
+    nojs || (
+      <template data-type='description'>
+        <Spanner id={id} chunks={descriptionChunks} />
+      </template>
+    )
+  }
 </project-card>
 
 <script>
@@ -67,9 +68,9 @@ const { nojs, id, name, summaryChunks, descriptionChunks, ghUrl, url, date, feat
     }
 
     connectedCallback() {
-      this.#summary = this.querySelector('template[data-type="project-summary"]')!.innerHTML;
-      this.#description = this.querySelector('template[data-type="project-description"]')!.innerHTML;
       this.#content = this.querySelector('article>p')!;
+      this.#summary = this.#content.innerHTML;
+      this.#description = this.querySelector('template[data-type="description"]')!.innerHTML;
       this.#closeButton = this.querySelector('article>header>button')!;
       this.#links = this.querySelector('.links')!;
       this.#tags = this.querySelector('.tags')!;

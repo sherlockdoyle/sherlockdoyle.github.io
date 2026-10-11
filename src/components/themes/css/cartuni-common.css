@@ -42,6 +42,7 @@ project-card > article > header > button {
   background-color: var(--c-variant);
   font-weight: 700;
   letter-spacing: 0.025em;
+  text-decoration: none;
 
   &:hover {
     border-radius: var(--r2);

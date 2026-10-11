@@ -3,10 +3,10 @@ export const KEY = 'Portfolio.SD';
 export const themes = [
   ['null', 'dark null'],
   ['cartUnI', 'cartUnI dark'],
+  ['Windows', 'Mac OS?'],
   'Résumé',
   'Neon',
   'Matrix',
-  'Windows',
 ] as const;
 export const moreThemes = [
   'undefined',
